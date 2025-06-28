@@ -1,0 +1,54 @@
+import json
+import os
+
+FILENAME = "expenses.json"
+
+# Загружаем или создаем файл
+def load_data():
+    if os.path.exists(FILENAME):
+        with open(FILENAME, "r") as f:
+            return json.load(f)
+    return {}
+
+# Сохраняем данные
+def save_data(data):
+    with open(FILENAME, "w") as f:
+        json.dump(data, f, indent=2)
+
+# Добавляем новую трату
+def add_expense(data):
+    category = input("Введите категорию (еда, транспорт, аренда и т.д.): ").lower()
+    amount = float(input("Введите сумму траты: "))
+    data[category] = data.get(category, 0) + amount
+    save_data(data)
+    print(f"✅ Добавлено: {amount} руб. в категорию '{category}'")
+
+# Показываем все траты
+def show_expenses(data):
+    print("\n📊 Текущие расходы по категориям:")
+    total = 0
+    for category, amount in data.items():
+        print(f"- {category}: {amount} руб.")
+        total += amount
+    print(f"\n💰 Общая сумма расходов: {total} руб.\n")
+
+# Главное меню
+def main():
+    data = load_data()
+    while True:
+        print("1. Добавить трату")
+        print("2. Показать все траты")
+        print("3. Выйти")
+        choice = input("Выберите действие (1/2/3): ")
+
+        if choice == "1":
+            add_expense(data)
+        elif choice == "2":
+            show_expenses(data)
+        elif choice == "3":
+            break
+        else:
+            print("❌ Неверный выбор. Попробуйте снова.")
+
+if __name__ == "__main__":
+    main()
